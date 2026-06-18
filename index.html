@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>GCchecker</title>
+
+<style>
+*{box-sizing:border-box;}
+
+html,body{margin:0;padding:0;}
+
+body{
+    background:#111;
+    color:#fff;
+    font-family:sans-serif;
+    padding:6px;
+}
+
+.gc{
+    font-size: clamp(17px, 2.3vh, 27px);
+    font-weight:bold;
+    margin:8px 0 4px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:4px;
+}
+
+.btn{
+    border:none;
+    border-radius:8px;
+    min-height: clamp(48px, 7.2vh, 85px);
+    font-size: clamp(15px, 2.1vh, 25px);
+    font-weight:bold;
+    background:#333;
+    color:#fff;
+    padding:6px;
+}
+
+.btn.active{background:#1e8e3e;}
+
+.result{
+    margin-top:6px;
+    background:#000;
+    border:1px solid #666;
+    border-radius:8px;
+    padding:10px;
+    white-space:pre-line;
+    font-size: clamp(19px, 2.85vh, 42px);
+    font-weight:bold;
+}
+
+.reset{
+    width:100%;
+    margin-top:6px;
+    border:none;
+    border-radius:8px;
+    height: clamp(46px, 6.2vh, 76px);
+    font-size: clamp(17px, 2.4vh, 27px);
+    font-weight:bold;
+    background:#b00020;
+    color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="gc">GC1</div>
+<div class="grid">
+<button class="btn" data-id="t1"></button>
+<button class="btn" data-id="f1"></button>
+</div>
+
+<div class="gc">GC2</div>
+<div class="grid">
+<button class="btn" data-id="f2"></button>
+</div>
+
+<div class="gc">ほのお・つなみ</div>
+<div class="grid">
+<button class="btn" data-id="c5" data-label="ほのお"></button>
+<button class="btn" data-id="c6" data-label="つなみ"></button>
+</div>
+
+<div class="gc">サンダガ</div>
+<div class="grid">
+<button class="btn" data-id="c8" data-label="チャージ"></button>
+<button class="btn" data-id="d8" data-label="アウト"></button>
+</div>
+
+<div class="gc">ブリザガ</div>
+<div class="grid">
+<button class="btn" data-id="c9" data-label="チャージ"></button>
+<button class="btn" data-id="d9" data-label="アウト"></button>
+</div>
+
+<div id="result" class="result"></div>
+
+<button class="reset" onclick="resetAll()">リセット</button>
+
+<script>
+
+const s = {
+    firstThunderEarly:true,
+    f1:false,
+    f2:false,
+    c5:false,c6:false,c8:false,d8:false,c9:false,d9:false
+};
+
+// =========================
+// ★重要：UI完全同期関数
+// =========================
+function renderUI(){
+
+    document.querySelectorAll(".btn").forEach(btn=>{
+        const id = btn.dataset.id;
+
+        let val = false;
+
+        if(id==="t1") val = s.firstThunderEarly;
+        else val = s[id];
+
+        // active
+        btn.classList.toggle("active", !!val);
+
+        // label
+        if(id==="t1"){
+            btn.textContent = "水雷（" + (s.firstThunderEarly ? "早" : "遅") + "）";
+        }
+        else if(id==="f1"){
+            btn.textContent = s.f1 ? "真" : "偽";
+        }
+        else if(id==="f2"){
+            btn.textContent = s.f2 ? "真" : "偽";
+        }
+        else{
+            btn.textContent = btn.dataset.label + (val ? "（真）" : "（偽）");
+        }
+    });
+}
+
+// =========================
+// 雷水
+// =========================
+function make(j){
+    return j ? "水AC / 雷BD" : "水BD / 雷AC";
+}
+
+// =========================
+// calc
+// =========================
+function calc(){
+
+    const f1 = s.f1;
+    const f2 = s.f2;
+
+    let r1,r4;
+
+    if(s.firstThunderEarly){
+        r1 = make(f1);
+        r4 = make(f2);
+    }else{
+        r1 = make(f2);
+        r4 = make(f1);
+    }
+
+    const v1 = f1 ? "外向く" : "中向く";
+    const v4 = f2 ? "外向く" : "中向く";
+
+    const k5 = s.c5 ? "中央から外" : "中央待機";
+    const k6 = s.c6 ? "中央待機" : "中央から外";
+
+    const j8 = (s.c8 === s.d8) ? "踏まない" : "直線踏む";
+    const j9 = (s.c9 === s.d9) ? "踏まない" : "扇踏む";
+
+    let l1;
+    if(j8==="踏まない" && j9==="踏まない") l1="踏まない";
+    else if(j8!=="踏まない" && j9!=="踏まない") l1="踏む踏む";
+    else l1 = (j8==="踏まない") ? j9 : j8;
+
+    document.getElementById("result").textContent =
+`① ${r1}
+② ${v1}
+③ ${k5}
+④ ${r4}
+⑤ ${v4}
+⑥ ${k6}
+⑦ ${l1}`;
+}
+
+// =========================
+// input
+// =========================
+document.querySelectorAll(".btn").forEach(btn=>{
+    btn.addEventListener("pointerdown",(e)=>{
+        e.preventDefault();
+
+        const id = btn.dataset.id;
+
+        if(id==="t1"){
+            s.firstThunderEarly=!s.firstThunderEarly;
+        }
+        else{
+            s[id]=!s[id];
+        }
+
+        renderUI();
+        calc();
+    });
+});
+
+function resetAll(){
+    Object.keys(s).forEach(k=>{
+        if(typeof s[k]==="boolean") s[k]=false;
+    });
+    s.firstThunderEarly=true;
+
+    renderUI();
+    calc();
+}
+
+renderUI();
+calc();
+
+</script>
+
+</body>
+</html>
