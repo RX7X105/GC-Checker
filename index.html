@@ -17,6 +17,21 @@ body{
     padding:6px;
 }
 
+#viewBtn{
+    position:fixed;
+    top:6px;
+    right:6px;
+    z-index:999;
+    height:42px;
+    padding:0 12px;
+    border:none;
+    border-radius:8px;
+    background:#444;
+    color:#fff;
+    font-weight:bold;
+    font-size:14px;
+}
+
 .gc{
     font-size: clamp(17px, 2.3vh, 27px);
     font-weight:bold;
@@ -40,7 +55,9 @@ body{
     padding:6px;
 }
 
-.btn.active{background:#1e8e3e;}
+.btn.active{
+    background:#1e8e3e;
+}
 
 .result{
     margin-top:6px;
@@ -68,6 +85,8 @@ body{
 </head>
 
 <body>
+
+<button id="viewBtn" onclick="toggleView()">表示：頭割り/散開</button>
 
 <div class="gc">GC1</div>
 <div class="grid">
@@ -108,79 +127,115 @@ const s = {
     firstThunderEarly:true,
     f1:true,
     f2:true,
-    c5:true,c6:true,c8:true,d8:true,c9:true,d9:true
+    c5:true,
+    c6:true,
+    c8:true,
+    d8:true,
+    c9:true,
+    d9:true
 };
-    
+
+let simpleView = true;
+
 // =========================
-// ★重要：UI完全同期関数
+// UI同期
 // =========================
 function renderUI(){
 
     document.querySelectorAll(".btn").forEach(btn=>{
+
         const id = btn.dataset.id;
 
-        let val = false;
+        let val=false;
 
-        if(id==="t1") val = s.firstThunderEarly;
-        else val = s[id];
-
-        // active
-        btn.classList.toggle("active", !!val);
-
-        // label
         if(id==="t1"){
-            btn.textContent = "水雷（" + (s.firstThunderEarly ? "早" : "遅") + "）";
+            val=s.firstThunderEarly;
+        }else{
+            val=s[id];
+        }
+
+        btn.classList.toggle("active",!!val);
+
+        if(id==="t1"){
+            btn.textContent=
+                "水雷（"+(s.firstThunderEarly?"早":"遅")+"）";
         }
         else if(id==="f1"){
-            btn.textContent = s.f1 ? "真" : "偽";
+            btn.textContent=s.f1?"真":"偽";
         }
         else if(id==="f2"){
-            btn.textContent = s.f2 ? "真" : "偽";
+            btn.textContent=s.f2?"真":"偽";
         }
         else{
-            btn.textContent = btn.dataset.label + (val ? "（真）" : "（偽）");
+            btn.textContent=
+                btn.dataset.label+
+                (val?"（真）":"（偽）");
         }
     });
+
 }
 
 // =========================
-// 雷水
+// 雷水表示
 // =========================
 function make(j){
-    return j ? "水AC / 雷BD" : "水BD / 雷AC";
+
+    if(simpleView){
+
+        return j
+            ? "水：頭割り　雷：散開"
+            : "水：散開　雷：頭割り";
+
+    }
+
+    return j
+        ? "水AC / 雷BD"
+        : "水BD / 雷AC";
 }
 
 // =========================
-// calc
+// 計算
 // =========================
 function calc(){
 
-    const f1 = s.f1;
-    const f2 = s.f2;
+    const f1=s.f1;
+    const f2=s.f2;
 
     let r1,r4;
 
     if(s.firstThunderEarly){
-        r1 = make(f1);
-        r4 = make(f2);
+        r1=make(f1);
+        r4=make(f2);
     }else{
-        r1 = make(f2);
-        r4 = make(f1);
+        r1=make(f2);
+        r4=make(f1);
     }
 
-    const v1 = f1 ? "外向く" : "中向く";
-    const v4 = f2 ? "外向く" : "中向く";
+    const v1=f1 ? "外向く" : "中向く";
+    const v4=f2 ? "外向く" : "中向く";
 
-    const k5 = s.c5 ? "中央から外" : "中央待機";
-    const k6 = s.c6 ? "中央待機" : "中央から外";
+    const k5=s.c5 ? "中央から外" : "中央待機";
+    const k6=s.c6 ? "中央待機" : "中央から外";
 
-    const j8 = (s.c8 === s.d8) ? "踏まない" : "直線踏む";
-    const j9 = (s.c9 === s.d9) ? "踏まない" : "扇踏む";
+    const j8=(s.c8===s.d8)
+        ? "踏まない"
+        : "直線踏む";
+
+    const j9=(s.c9===s.d9)
+        ? "踏まない"
+        : "扇踏む";
 
     let l1;
-    if(j8==="踏まない" && j9==="踏まない") l1="踏まない";
-    else if(j8!=="踏まない" && j9!=="踏まない") l1="踏む踏む";
-    else l1 = (j8==="踏まない") ? j9 : j8;
+
+    if(j8==="踏まない" && j9==="踏まない"){
+        l1="踏まない";
+    }
+    else if(j8!=="踏まない" && j9!=="踏まない"){
+        l1="踏む踏む";
+    }
+    else{
+        l1=(j8==="踏まない") ? j9 : j8;
+    }
 
     document.getElementById("result").textContent =
 `① ${r1}
@@ -193,30 +248,54 @@ function calc(){
 }
 
 // =========================
-// input
+// 表示切替
+// =========================
+function toggleView(){
+
+    simpleView=!simpleView;
+
+    document.getElementById("viewBtn").textContent =
+        simpleView
+        ? "表示：頭割り/散開"
+        : "表示：AC/BD";
+
+    calc();
+}
+
+// =========================
+// 入力
 // =========================
 document.querySelectorAll(".btn").forEach(btn=>{
+
     btn.addEventListener("pointerdown",(e)=>{
+
         e.preventDefault();
 
-        const id = btn.dataset.id;
+        const id=btn.dataset.id;
 
         if(id==="t1"){
             s.firstThunderEarly=!s.firstThunderEarly;
-        }
-        else{
+        }else{
             s[id]=!s[id];
         }
 
         renderUI();
         calc();
     });
+
 });
 
+// =========================
+// リセット
+// =========================
 function resetAll(){
+
     Object.keys(s).forEach(k=>{
-        if(typeof s[k]==="boolean") s[k]=true;
+        if(typeof s[k]==="boolean"){
+            s[k]=true;
+        }
     });
+
     s.firstThunderEarly=true;
 
     renderUI();
