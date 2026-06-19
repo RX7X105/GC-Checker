@@ -106,11 +106,11 @@ body{
 
 const s = {
     firstThunderEarly:true,
-    f1:false,
-    f2:false,
-    c5:false,c6:false,c8:false,d8:false,c9:false,d9:false
+    f1:true,
+    f2:true,
+    c5:true,c6:true,c8:true,d8:true,c9:true,d9:true
 };
-
+    
 // =========================
 // ★重要：UI完全同期関数
 // =========================
@@ -215,7 +215,7 @@ document.querySelectorAll(".btn").forEach(btn=>{
 
 function resetAll(){
     Object.keys(s).forEach(k=>{
-        if(typeof s[k]==="boolean") s[k]=false;
+        if(typeof s[k]==="boolean") s[k]=true;
     });
     s.firstThunderEarly=true;
 
