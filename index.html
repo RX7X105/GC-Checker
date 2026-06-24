@@ -193,8 +193,8 @@ function make(j){
     }
 
     return j
-        ? "水:AC  雷:BD"
-        : "水:BD  雷:AC";
+        ? "水：AC  雷：BD"
+        : "水：BD  雷：AC";
 }
 
 function calc(){
@@ -215,8 +215,8 @@ function calc(){
     const v1 = f1 ? "外向く" : "中向く";
     const v4 = f2 ? "外向く" : "中向く";
 
-    const k5 = s.c5 ? "中央から外" : "中央待機";
-    const k6 = s.c6 ? "中央待機" : "中央から外";
+    const k5 = s.c5 ? "中央から外へ" : "中央待機";
+    const k6 = s.c6 ? "中央待機" : "中央から外へ";
 
     const j8 = (s.c8 === s.d8)
         ? "踏まない"
@@ -249,11 +249,11 @@ function calc(){
 
     document.getElementById("result").innerHTML =
 `① ${r1}
-<br>　早視線:${earlySightMove}　GC2無職:${gc2NoJobMove}
+<br>　早視線：${earlySightMove}　GC2無職：${gc2NoJobMove}
 <br>② ${v1}
 <br>③ ${k5}
 <br>④ ${r4}
-<br>　遅視線:${lateSightMove}　GC1無職:${gc1NoJobMove}
+<br>　遅視線：${lateSightMove}　GC1無職：${gc1NoJobMove}
 <br>⑤ ${v4}
 <br>⑥ ${k6}
 <br>⑦ ${l1}`;
