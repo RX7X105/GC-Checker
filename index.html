@@ -69,7 +69,7 @@ body{
 
     flex:0 0 auto;
 
-    width:7.4em;
+    width:10.0em;
     text-align:center;
     background:#444;
     color:#fff;
@@ -147,6 +147,14 @@ body{
 .spread{
     color:#ffd600; /* 黄色 */
     font-weight:900;
+}
+
+.statusIcon{
+    height:1.35em;
+    width:auto;
+    margin-left:0.35em;
+    vertical-align:middle;
+    border-radius:50%;
 }
 </style>
 </head>
@@ -237,14 +245,20 @@ function renderUI(){
             btn.textContent = "水雷（" + (s.firstThunderEarly ? "早" : "遅") + "）";
         }
         else if(id==="f1"){
-            btn.textContent = s.f1 ? "真" : "偽";
-        }
-        else if(id==="f2"){
-            btn.textContent = s.f2 ? "真" : "偽";
-        }
+    btn.innerHTML = s.f1
+        ? '真 <img src="真.png" class="statusIcon">'
+        : '偽 <img src="偽.png" class="statusIcon">';
+}
+else if(id==="f2"){
+    btn.innerHTML = s.f2
+        ? '真 <img src="真.png" class="statusIcon">'
+        : '偽 <img src="偽.png" class="statusIcon">';
+}
         else{
-            btn.textContent = btn.dataset.label + (val ? "（真）" : "（偽）");
-        }
+    btn.innerHTML = val
+        ? `${btn.dataset.label}（真 <img src="真.png" class="statusIcon">）`
+        : `${btn.dataset.label}（偽 <img src="偽.png" class="statusIcon">）`;
+}
     });
 }
 
