@@ -34,15 +34,14 @@ body{
 }
 
 /* ラベル列（固定幅） */
-   .label{
-    flex:0 0 84px;
-    width:84px;
+  .label{
+    flex:0 0 clamp(84px, 11vw, 110px);
+    width:clamp(84px, 11vw, 110px);
 
     font-size:var(--base-font);
     font-weight:bold;
     white-space:nowrap;
 }
-
 /* ボタン列 */
 .gcBtns{
     display:flex;
