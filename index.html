@@ -13,7 +13,7 @@ body{
     padding:6px;
     background:#111;
     color:#fff;
-    font-family:sans-serif;
+    font-family:sans-serif; /* 元のフォント指定に戻しました */
 }
 
 /* =========================
@@ -86,7 +86,7 @@ body{
 .btn{
     border:none;
     border-radius:8px;
-        font-size:var(--base-font);
+    font-size:var(--base-font);
     font-weight:bold;
     background:#333;
     color:#fff;
@@ -107,8 +107,8 @@ body{
     font-weight:bold;
 }
 
-.stop{ color:#ffd600; font-weight:900; }
-.move{ color:#4fc3ff; font-weight:900; }
+.stop, .yellow-text { color:#ffd600; font-weight:900; }
+.move, .cyan-text { color:#4fc3ff; font-weight:900; }
 
 /* =========================
    下部ボタン
@@ -162,7 +162,6 @@ body{
 
 <body>
 
-<!-- GC1 -->
 <div class="gcRow">
     <div class="label">GC1</div>
     <div class="gcBtns">
@@ -172,7 +171,6 @@ body{
     </div>
 </div>
 
-<!-- GC2 -->
 <div class="gcRow">
     <div class="label">GC2</div>
     <div class="gcBtns">
@@ -180,7 +178,6 @@ body{
     </div>
 </div>
 
-<!-- ほのお・つなみ -->
 <div class="gcRow">
     <div class="label">炎・津波</div>
     <div class="gcBtns">
@@ -189,7 +186,6 @@ body{
     </div>
 </div>
 
-<!-- サンダガ -->
 <div class="gcRow">
     <div class="label">サンダガ</div>
     <div class="gcBtns">
@@ -198,7 +194,6 @@ body{
     </div>
 </div>
 
-<!-- ブリザガ -->
 <div class="gcRow">
     <div class="label">ブリザガ</div>
     <div class="gcBtns">
@@ -207,10 +202,8 @@ body{
     </div>
 </div>
 
-<!-- 結果 -->
 <div id="result" class="result"></div>
 
-<!-- 下部 -->
 <div class="btnRow">
     <button class="reset" onclick="resetAll()">リセット</button>
     <button id="viewBtn" onclick="toggleView()">表示：頭割り/散開</button>
@@ -266,13 +259,13 @@ else if(id==="f2"){
 function make(j){
     if(simpleView){
         return j
-            ? '水：<span class="headshare">頭割り</span>　雷：<span class="spread">散開</span>'
-            : '水：<span class="spread">散開</span>　雷：<span class="headshare">頭割り</span>';
+            ? '水：<span class="headshare">頭割り</span> 雷：<span class="spread">散開</span>'
+            : '水：<span class="spread">散開</span> 雷：<span class="headshare">頭割り</span>';
     }
 
     return j
-        ? '水：AC　雷：BD'
-        : '水：BD　雷：AC';
+        ? '水：AC 雷：BD'
+        : '水：BD 雷：AC';
 }function calc(){
 
     const f1 = s.f1;
@@ -288,11 +281,12 @@ function make(j){
         r4 = make(f1);
     }
 
-    const v1 = f1 ? "外向く" : "中向く";
-    const v4 = f2 ? "外向く" : "中向く";
+    /* 各テキストへ指定のカラー（水色・黄色）を適用 */
+    const v1 = f1 ? '<span class="yellow-text">外向く</span>' : '<span class="cyan-text">中向く</span>';
+    const v4 = f2 ? '<span class="yellow-text">外向く</span>' : '<span class="cyan-text">中向く</span>';
 
-    const k5 = s.c5 ? "中央から外へ" : "中央待機";
-    const k6 = s.c6 ? "中央待機" : "中央から外へ";
+    const k5 = s.c5 ? '<span class="yellow-text">中央から外へ</span>' : '<span class="cyan-text">中央待機</span>';
+    const k6 = s.c6 ? '<span class="cyan-text">中央待機</span>' : '<span class="yellow-text">中央から外へ</span>';
 
     const j8 = (s.c8 === s.d8) ? "踏まない" : "直線踏む";
     const j9 = (s.c9 === s.d9) ? "踏まない" : "扇踏む";
@@ -307,11 +301,11 @@ function make(j){
 
     document.getElementById("result").innerHTML =
 `① ${r1}
-<br>　早視線：${f1 ? stop : move}　GC2無職：${f2 ? stop : move}
+<br> 早視線：${f1 ? stop : move} GC2無職：${f2 ? stop : move}
 <br>② ${v1}
 <br>③ ${k5}
 <br>④ ${r4}
-<br>　遅視線：${f2 ? stop : move}　GC1無職：${f1 ? stop : move}
+<br> 遅視線：${f2 ? stop : move} GC1無職：${f1 ? stop : move}
 <br>⑤ ${v4}
 <br>⑥ ${k6}
 <br>⑦ ${l1}`;
