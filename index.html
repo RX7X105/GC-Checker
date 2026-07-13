@@ -84,23 +84,30 @@ body{
 .stop, .yellow-text { color:#ffd600; font-weight:900; }
 .move, .cyan-text { color:#4fc3ff; font-weight:900; }
 
-/* ⑦予測マトリクス用のスタイル */
+/* ⑦予測マトリクス用のレイアウト（幅固定・折り返し防止） */
 .result-table {
-    width: 100%;
+    margin: 8px auto 0 auto;
     border-collapse: collapse;
-    margin-top: 8px;
-    font-size: 0.85em;
+    font-size: 0.8em;
     text-align: center;
+    table-layout: fixed;
+    width: 440px; /* 80px + (90px * 4) */
 }
 .result-table td, .result-table th {
-    padding: 4px 2px;
+    padding: 6px 0;
     border: 1px solid #444;
+    white-space: nowrap;
+    overflow: hidden;
+    vertical-align: middle;
 }
 .result-table th.row-label {
     text-align: left;
-    width: 60px;
+    width: 80px;
     font-weight: bold;
     border: none;
+}
+.result-table td.cell-data {
+    width: 90px;
 }
 .result-ans {
     background: #222;
@@ -137,6 +144,13 @@ body{
     margin-left:0.35em;
     vertical-align:middle;
     border-radius:50%;
+}
+/* マトリクス内のアイコン調整用 */
+.tableIcon {
+    height: 1.5em;
+    width: auto;
+    vertical-align: middle;
+    border-radius: 50%;
 }
 </style>
 </head>
@@ -295,28 +309,32 @@ function calc(){
         let pattern_FT = (res_ft8 === "踏まない" && res_ft9 === "踏まない") ? "踏まない" : 
                          (res_ft8 !== "踏まない" && res_ft9 !== "踏まない") ? "踏む踏む" : (res_ft8 === "踏まない" ? "扇踏む" : "直線踏む");
 
+        const imgT = '<img src="真.png" class="tableIcon">';
+        const imgF = '<img src="偽.png" class="tableIcon">';
+
+        // 〇と？を画像タグに置き換え
         resultHtml += `⑦ 最終候補
 <table class="result-table">
     <tr>
         <th class="row-label">雷 (上)</th>
-        <td>〇</td>
-        <td>？</td>
-        <td>〇</td>
-        <td>？</td>
+        <td class="cell-data">${imgT}</td>
+        <td class="cell-data">${imgT}</td>
+        <td class="cell-data">${imgF}</td>
+        <td class="cell-data">${imgF}</td>
     </tr>
     <tr>
         <th class="row-label">氷 (下)</th>
-        <td>？</td>
-        <td>〇</td>
-        <td>〇</td>
-        <td>？</td>
+        <td class="cell-data">${imgT}</td>
+        <td class="cell-data">${imgF}</td>
+        <td class="cell-data">${imgT}</td>
+        <td class="cell-data">${imgF}</td>
     </tr>
     <tr class="result-ans">
         <th class="row-label" style="background:#000;">結果</th>
-        <td>${pattern_TF}</td>
-        <td>${pattern_FT}</td>
-        <td>${pattern_TT}</td>
-        <td>${pattern_FF}</td>
+        <td class="cell-data">${pattern_TT}</td>
+        <td class="cell-data">${pattern_TF}</td>
+        <td class="cell-data">${pattern_FT}</td>
+        <td class="cell-data">${pattern_FF}</td>
     </tr>
 </table>`;
     } else {
@@ -337,7 +355,7 @@ function calc(){
 function toggleMode(){
     predictMode = !predictMode;
     document.getElementById("modeBtn").textContent =
-        predictMode ? "モード：未来予測" : "モード：手動入力";
+        predictMode ? "モード：予測" : "モード：手動入力";
     renderUI();
     calc();
 }
