@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>GCchecker</title>
+<title>GCchecker (公開用)</title>
 
 <style>
 *{box-sizing:border-box;}
@@ -13,19 +13,13 @@ body{
     padding:6px;
     background:#111;
     color:#fff;
-    font-family:sans-serif; /* 元のフォント指定に戻しました */
+    font-family:sans-serif;
 }
 
-/* =========================
-   共通フォント基準
-========================= */
 :root{
     --base-font: clamp(16px, 2.1vh, 24px);
 }
 
-/* =========================
-   行レイアウト
-========================= */
 .gcRow{
     display:flex;
     align-items:center;
@@ -33,43 +27,30 @@ body{
     margin:6px 0;
 }
 
-/* ラベル列（固定幅） */
-  .label{
+.label{
     flex:0 0 clamp(84px, 14vw, 120px);
     width:clamp(84px, 14vw, 120px);
-
     font-size:var(--base-font);
     font-weight:bold;
     white-space:nowrap;
 }
-/* ボタン列 */
 .gcBtns{
     display:flex;
     gap:6px;
 }
 
-/* =========================
-   ボタン（完全統一）
-========================= */
 .gcBtns .btn{
     font-size:var(--base-font);
     line-height:1;
-
     height:3.0em;
-
     padding:0 9px;
-
     border:none;
     border-radius:6px;
-
     display:flex;
     align-items:center;
     justify-content:center;
-
     white-space:nowrap;
-
     flex:0 0 auto;
-
     width:10.0em;
     text-align:center;
     background:#444;
@@ -80,9 +61,6 @@ body{
     background:#1e8e3e;
 }
 
-/* =========================
-   メインボタン（既存維持）
-========================= */
 .btn{
     border:none;
     border-radius:8px;
@@ -90,12 +68,8 @@ body{
     font-weight:bold;
     background:#333;
     color:#fff;
-    
 }
 
-/* =========================
-   結果
-========================= */
 .result{
     margin-top:6px;
     background:#000;
@@ -110,9 +84,30 @@ body{
 .stop, .yellow-text { color:#ffd600; font-weight:900; }
 .move, .cyan-text { color:#4fc3ff; font-weight:900; }
 
-/* =========================
-   下部ボタン
-========================= */
+/* ⑦予測マトリクス用のスタイル */
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 0.85em;
+    text-align: center;
+}
+.result-table td, .result-table th {
+    padding: 4px 2px;
+    border: 1px solid #444;
+}
+.result-table th.row-label {
+    text-align: left;
+    width: 60px;
+    font-weight: bold;
+    border: none;
+}
+.result-ans {
+    background: #222;
+    font-weight: 900;
+    color: #fff;
+}
+
 .btnRow{
     display:flex;
     gap:6px;
@@ -120,35 +115,21 @@ body{
 }
 
 .reset,
-#viewBtn{
+#modeBtn{
     flex:1;
     height:clamp(46px,6.2vh,76px);
     border:none;
     border-radius:8px;
     font-weight:bold;
-}
-
-.reset{
-    background:#b00020;
-    color:#fff;
     font-size:var(--base-font);
+    white-space:nowrap;
 }
 
-#viewBtn{
-    background:#444;
-    color:#fff;
-    font-size:var(--base-font);
-}
+.reset{ background:#b00020; color:#fff; }
+#modeBtn{ background:#444; color:#fff; }
 
-.headshare{
-    color:#4fc3ff; /* 水色 */
-    font-weight:900;
-}
-
-.spread{
-    color:#ffd600; /* 黄色 */
-    font-weight:900;
-}
+.headshare{ color:#4fc3ff; font-weight:900; }
+.spread{ color:#ffd600; font-weight:900; }
 
 .statusIcon{
     height:1.35em;
@@ -162,15 +143,16 @@ body{
 
 <body>
 
+<!-- GC1 -->
 <div class="gcRow">
     <div class="label">GC1</div>
     <div class="gcBtns">
         <button class="btn" data-id="f1"></button>
         <button class="btn" data-id="t1"></button>
-        
     </div>
 </div>
 
+<!-- GC2 -->
 <div class="gcRow">
     <div class="label">GC2</div>
     <div class="gcBtns">
@@ -178,6 +160,7 @@ body{
     </div>
 </div>
 
+<!-- ほのお・つなみ -->
 <div class="gcRow">
     <div class="label">炎・津波</div>
     <div class="gcBtns">
@@ -186,27 +169,31 @@ body{
     </div>
 </div>
 
+<!-- サンダガ -->
 <div class="gcRow">
     <div class="label">サンダガ</div>
     <div class="gcBtns">
         <button class="btn" data-id="c8" data-label="チャージ"></button>
-        <button class="btn" data-id="d8" data-label="アウト"></button>
+        <button class="btn out-btn" data-id="d8" data-label="アウト"></button>
     </div>
 </div>
 
+<!-- ブリザガ -->
 <div class="gcRow">
     <div class="label">ブリザガ</div>
     <div class="gcBtns">
         <button class="btn" data-id="c9" data-label="チャージ"></button>
-        <button class="btn" data-id="d9" data-label="アウト"></button>
+        <button class="btn out-btn" data-id="d9" data-label="アウト"></button>
     </div>
 </div>
 
+<!-- 結果 -->
 <div id="result" class="result"></div>
 
+<!-- 下部 -->
 <div class="btnRow">
     <button class="reset" onclick="resetAll()">リセット</button>
-    <button id="viewBtn" onclick="toggleView()">表示：頭割り/散開</button>
+    <button id="modeBtn" onclick="toggleMode()">モード：未来予測</button>
 </div>
 
 <script>
@@ -223,54 +210,43 @@ const s = {
     d9:true
 };
 
-let simpleView = true;
+let predictMode = true;
 
 function renderUI(){
+    document.querySelectorAll(".out-btn").forEach(btn => {
+        btn.style.display = predictMode ? "none" : "flex";
+    });
 
     document.querySelectorAll(".btn").forEach(btn=>{
-
         const id = btn.dataset.id;
-
         let val = (id==="t1") ? s.firstThunderEarly : s[id];
-
         btn.classList.toggle("active", !!val);
 
         if(id==="t1"){
             btn.textContent = "水雷（" + (s.firstThunderEarly ? "早" : "遅") + "）";
         }
-        else if(id==="f1"){
-    btn.innerHTML = s.f1
-        ? '真 <img src="真.png" class="statusIcon">'
-        : '偽 <img src="偽.png" class="statusIcon">';
-}
-else if(id==="f2"){
-    btn.innerHTML = s.f2
-        ? '真 <img src="真.png" class="statusIcon">'
-        : '偽 <img src="偽.png" class="statusIcon">';
-}
+        else if(id==="f1" || id==="f2"){
+            btn.innerHTML = s[id]
+                ? '真 <img src="真.png" class="statusIcon">'
+                : '偽 <img src="偽.png" class="statusIcon">';
+        }
         else{
-    btn.innerHTML = val
-        ? `${btn.dataset.label}（真 <img src="真.png" class="statusIcon">）`
-        : `${btn.dataset.label}（偽 <img src="偽.png" class="statusIcon">）`;
-}
+            btn.innerHTML = val
+                ? `${btn.dataset.label}（真 <img src="真.png" class="statusIcon">）`
+                : `${btn.dataset.label}（偽 <img src="偽.png" class="statusIcon">）`;
+        }
     });
 }
 
 function make(j){
-    if(simpleView){
-        return j
-            ? '水：<span class="headshare">頭割り</span> 雷：<span class="spread">散開</span>'
-            : '水：<span class="spread">散開</span> 雷：<span class="headshare">頭割り</span>';
-    }
-
     return j
-        ? '水：AC 雷：BD'
-        : '水：BD 雷：AC';
-}function calc(){
+        ? '水：<span class="headshare">頭割り</span> 雷：<span class="spread">散開</span>'
+        : '水：<span class="spread">散開</span> 雷：<span class="headshare">頭割り</span>';
+}
 
+function calc(){
     const f1 = s.f1;
     const f2 = s.f2;
-
     let r1,r4;
 
     if(s.firstThunderEarly){
@@ -281,51 +257,97 @@ function make(j){
         r4 = make(f1);
     }
 
-    /* 各テキストへ指定のカラー（水色・黄色）を適用 */
     const v1 = f1 ? '<span class="yellow-text">外向く</span>' : '<span class="cyan-text">中向く</span>';
     const v4 = f2 ? '<span class="yellow-text">外向く</span>' : '<span class="cyan-text">中向く</span>';
-
     const k5 = s.c5 ? '<span class="yellow-text">中央から外へ</span>' : '<span class="cyan-text">中央待機</span>';
     const k6 = s.c6 ? '<span class="cyan-text">中央待機</span>' : '<span class="yellow-text">中央から外へ</span>';
-
-    const j8 = (s.c8 === s.d8) ? "踏まない" : "直線踏む";
-    const j9 = (s.c9 === s.d9) ? "踏まない" : "扇踏む";
-
-    let l1;
-    if(j8==="踏まない" && j9==="踏まない") l1="踏まない";
-    else if(j8!=="踏まない" && j9!=="踏まない") l1="踏む踏む";
-    else l1=(j8==="踏まない") ? j9 : j8;
 
     const stop = '<span class="stop">止まる</span>';
     const move = '<span class="move">動く</span>';
 
-    document.getElementById("result").innerHTML =
-`① ${r1}
+    let resultHtml = `① ${r1}
 <br> 早視線：${f1 ? stop : move} GC2無職：${f2 ? stop : move}
 <br>② ${v1}
 <br>③ ${k5}
 <br>④ ${r4}
 <br> 遅視線：${f2 ? stop : move} GC1無職：${f1 ? stop : move}
 <br>⑤ ${v4}
-<br>⑥ ${k6}
-<br>⑦ ${l1}`;
+<br>⑥ ${k6}<br>`;
+
+    if (predictMode) {
+        const res_tt8 = s.c8 ? "踏まない" : "直線";
+        const res_tt9 = s.c9 ? "踏まない" : "扇";
+        let pattern_TT = (res_tt8 === "踏まない" && res_tt9 === "踏まない") ? "踏まない" : 
+                         (res_tt8 !== "踏まない" && res_tt9 !== "踏まない") ? "踏む踏む" : (res_tt8 === "踏まない" ? "扇踏む" : "直線踏む");
+
+        const res_ff8 = !s.c8 ? "踏まない" : "直線";
+        const res_ff9 = !s.c9 ? "踏まない" : "扇";
+        let pattern_FF = (res_ff8 === "踏まない" && res_ff9 === "踏まない") ? "踏まない" : 
+                         (res_ff8 !== "踏まない" && res_ff9 !== "踏まない") ? "踏む踏む" : (res_ff8 === "踏まない" ? "扇踏む" : "直線踏む");
+
+        const res_tf8 = s.c8 ? "踏まない" : "直線";
+        const res_tf9 = !s.c9 ? "踏まない" : "扇";
+        let pattern_TF = (res_tf8 === "踏まない" && res_tf9 === "踏まない") ? "踏まない" : 
+                         (res_tf8 !== "踏まない" && res_tf9 !== "踏まない") ? "踏む踏む" : (res_tf8 === "踏まない" ? "扇踏む" : "直線踏む");
+
+        const res_ft8 = !s.c8 ? "踏まない" : "直線";
+        const res_ft9 = s.c9 ? "踏まない" : "扇";
+        let pattern_FT = (res_ft8 === "踏まない" && res_ft9 === "踏まない") ? "踏まない" : 
+                         (res_ft8 !== "踏まない" && res_ft9 !== "踏まない") ? "踏む踏む" : (res_ft8 === "踏まない" ? "扇踏む" : "直線踏む");
+
+        resultHtml += `⑦ 最終候補
+<table class="result-table">
+    <tr>
+        <th class="row-label">雷 (上)</th>
+        <td>〇</td>
+        <td>？</td>
+        <td>〇</td>
+        <td>？</td>
+    </tr>
+    <tr>
+        <th class="row-label">氷 (下)</th>
+        <td>？</td>
+        <td>〇</td>
+        <td>〇</td>
+        <td>？</td>
+    </tr>
+    <tr class="result-ans">
+        <th class="row-label" style="background:#000;">結果</th>
+        <td>${pattern_TF}</td>
+        <td>${pattern_FT}</td>
+        <td>${pattern_TT}</td>
+        <td>${pattern_FF}</td>
+    </tr>
+</table>`;
+    } else {
+        const j8 = (s.c8 === s.d8) ? "踏まない" : "直線";
+        const j9 = (s.c9 === s.d9) ? "踏まない" : "扇";
+        
+        let l1;
+        if(j8==="踏まない" && j9==="踏まない") l1="踏まない";
+        else if(j8!=="踏まない" && j9!=="踏まない") l1="踏む踏む";
+        else l1=(j8==="踏まない") ? "扇踏む" : "直線踏む";
+
+        resultHtml += `⑦ 結果：【 ${l1} 】`;
+    }
+
+    document.getElementById("result").innerHTML = resultHtml;
 }
 
-function toggleView(){
-    simpleView = !simpleView;
-    document.getElementById("viewBtn").textContent =
-        simpleView ? "表示：頭割り/散開" : "表示：AC/BD";
+function toggleMode(){
+    predictMode = !predictMode;
+    document.getElementById("modeBtn").textContent =
+        predictMode ? "モード：未来予測" : "モード：手動入力";
+    renderUI();
     calc();
 }
 
 document.querySelectorAll(".btn").forEach(btn=>{
     btn.addEventListener("pointerdown",(e)=>{
         e.preventDefault();
-
         const id = btn.dataset.id;
         if(id==="t1") s.firstThunderEarly = !s.firstThunderEarly;
         else s[id] = !s[id];
-
         renderUI();
         calc();
     });
